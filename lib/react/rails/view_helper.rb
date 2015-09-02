@@ -24,6 +24,22 @@ module React
 
         content_tag(html_tag, '', html_options, &block)
       end
+
+      def react_redux_state(state= {}, options = {}, &block)
+        options = {:tag => options} if options.is_a?(Symbol)
+
+        html_options = options.reverse_merge(data: {})
+        html_options[:data].tap do |data|
+          data[:redux_state] = (state.is_a?(String) ? state : state.to_json)
+        end
+        html_tag = html_options[:tag] || :div
+
+        # remove internally used properties so they aren't rendered to DOM
+        html_options.except!(:tag)
+
+        content_tag(html_tag, '', html_options, &block)
+      end
+
     end
   end
 end
